@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
+
+    <script type="text/javascript">
+        let chatVol = new Array(10).fill(0);
+        setInterval(function () {
+            $(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/process",
+                    //dataType: 'json',
+                }).done(function (message) {
+                    //let chatlog = JSON.parse(message);
+                    let chat = message.chat;
+                    let count = 0;
+                    for (var i = 0; i < chat.length; i++) {
+                        count++;
+                        $("#chat").prepend("<span class=chat-message style=display:block>" + chat[i] + "</span>");
+                    }
+                    chatVol.shift();
+                    chatVol.push(count);
+                    $(".sparkline-container").sparkline(chatVol)
+
+                    let log = $("#chat");
+                    console.log(log.children().length);
+                    while(log.children().length >= 25){
+                        log.children().last().remove();
+                    }
+                });
+            });
+        }, 500);
+
+    </script>
+</head>
+
+<body>
+    <h1>Twitch Chat</h1>
+    <div class="sparkline-container"></div>
+    <div class="chat-container" style="height: 550px;">
+        <div id="chat" style="height: 500px; overflow: hidden;"></div>
+</body>
+
+</html>
