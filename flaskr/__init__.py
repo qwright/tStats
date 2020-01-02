@@ -12,13 +12,14 @@ def create_app(test_config=None):
 	def main():
 		return render_template("index.html")
 	
-	@app.route("/process")
-	def process():
-		return jsonify(chat=irc.getmsg())
-		
+	#@app.route("/process")
+	#def process():
+	#	return jsonify(chat=irc.getmsg())
+	#	
 	return app
 
-#def getTopChanels():
-#	with open("https://www.twitch.tv/directory/all") as fin:
-#		soup = BeautifulSoup(fin)
-	
+def getTopChanels():
+	with open("https://www.twitch.tv/directory/all") as fin:
+		soup = BeautifulSoup(fin)
+	print(soup)
+

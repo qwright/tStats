@@ -3,8 +3,6 @@ import socket
 import click
 from flaskr import constants
 
-#user = 'nerdscrib'
-#pswd = str('oauth:7jo355j5hv76v4sfltdtmg6cy91zoh')
 user = constants.user
 pswd = constants.pswd
 server = 'irc.chat.twitch.tv'
