@@ -7,7 +7,12 @@
     <script type="text/javascript" src="https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.js"></script>
 
     <script type="text/javascript">
-        let chatVol = new Array(10).fill(0);
+        //let chatVol = new Array(10).fill(0);
+        let rawSparklines = new Array(4);
+        for (i = 0; i <= 4; i++) {
+            rawSparklines[i] = new Array(10).fill(0);
+        }
+        //console.log(rawSparklines);
         setInterval(function () {
             $(function () {
                 $.ajax({
@@ -15,34 +20,60 @@
                     url: "/process",
                     //dataType: 'json',
                 }).done(function (message) {
-                    //let chatlog = JSON.parse(message);
                     let chat = message.chat;
-                    let count = 0;
-                    for (var i = 0; i < chat.length; i++) {
-                        count++;
-                        $("#chat").prepend("<span class=chat-message style=display:block>" + chat[i] + "</span>");
+                    let topChannels = message.top_channels;
+
+                    //let count = 0;
+                    let countPerStream = {};
+                    for (var i = 0; i < topChannels.length; i++) {
+                        countPerStream[topChannels[i]] = 0;
                     }
-                    chatVol.shift();
-                    chatVol.push(count);
-                    $(".sparkline-container").sparkline(chatVol)
+                    for (var i = 0; i < chat.length; i++) {
+                        let chan = chat[i].split("]")[0].slice(1);
+                        countPerStream[chan] = countPerStream[chan] + 1;
+                        $("#chat").prepend("<span class=chat-message>" + chat[i] + "</span>");
+                    }
+                    //console.log(rawSparklines);
+                    //TODO proper labels and display msgs/second
+                    let msgCount = Object.keys(countPerStream);
+                    for (var i = 0; i < rawSparklines.length; i++) {
+                        //console.log(rawSparklines[i] + " " + msgCount[i] + " " + countPerStream[msgCount[i]]);
+                        rawSparklines[i].shift();
+                        rawSparklines[i].push(countPerStream[msgCount[i]]);
+                        $(".sparkline-text-" + i).text(`${msgCount[i]} - ${(rawSparklines[i].reduce(function(total, value){
+                            return total+value;})/rawSparklines[i].length)*2}msg/s`);
+                        $(".sparkline-" + i).sparkline(rawSparklines[i]);
+                    }
 
                     let log = $("#chat");
-                    console.log(log.children().length);
-                    while(log.children().length >= 25){
+                    while (log.children().length >= 25) {
                         log.children().last().remove();
                     }
                 });
             });
         }, 500);
-        
     </script>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/style.css')}}">
 </head>
 
 <body>
     <h1>Twitch Chat</h1>
-    <div class="sparkline-container"></div>
-    <div class="chat-container" style="height: 550px;">
-        <div id="chat" style="height: 500px; overflow: hidden;"></div>
+    <div class="content">
+        <div class="sparkline-container">
+            <span class="sparkline-text-0"></span>
+            <div class="sparkline-0"></div>
+            <span class="sparkline-text-1"></span>
+            <div class="sparkline-1"></div>
+            <span class="sparkline-text-2"></span>
+            <div class="sparkline-2"></div>
+            <span class="sparkline-text-3"></span>
+            <div class="sparkline-3"></div>
+            <span class="sparkline-text-4"></span>
+            <div class="sparkline-4"></div>
+        </div>
+        <div class="chat-container">
+            <div id="chat"></div>
+        </div>
 </body>
 
 </html>

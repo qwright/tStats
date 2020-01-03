@@ -1,0 +1,33 @@
+body{
+    background: black;
+}
+h1{
+    text-align: center;
+    color: whitesmoke;
+}
+.content{
+    margin: auto;
+    height:550px;
+}
+
+.sparkline-container{ 
+    margin-top: 20%;
+    width: 30%;
+    float: left;
+    background: whitesmoke;
+}
+
+.chat-container{
+    height: 550px;
+    margin-left: 30%;
+}
+
+.chat-message{
+    display:block;
+    color:whitesmoke;
+}
+
+#chat{
+    height: 550px;
+    overflow: hidden;
+}

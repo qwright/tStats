@@ -20,7 +20,7 @@ def ping():
     ircsock.send(bytes("PONG :pingisn", "UTF-8"))
 
 def getmsg():
-    ircmsg = ircsock.recv(2048).decode("UTF-8")
+    ircmsg = ircsock.recv(4096).decode("UTF-8")
     ircmsg = ircmsg.strip('nr')
     if ircmsg.find("PING: ") != -1:
         ping()
@@ -36,7 +36,7 @@ def getmsg():
                     #clean problem glyphs
                 message = message.replace('"', '""').replace('u"', '""')
                 cleaned_chat.append(f"[{channel}] {name}: {message}")
-                print(f"[{channel}] {name}: {message}")
+                #print(f"[{channel}] {name}: {message}")
         return cleaned_chat
 
 #def tsock(user, pswd, chan):
