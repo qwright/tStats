@@ -1,6 +1,7 @@
 import time
 import socket
 import click
+import re
 from flaskr import constants
 
 user = constants.user
@@ -28,13 +29,14 @@ def getmsg():
         cleaned_chat = []
         for msg in bulk_chat:
             if msg.find("PRIVMSG") != -1:
+                channel = msg.split("#", 1)[1].split(":",1)[0].strip()
                 name = msg.split("!", 1)[0][1:]
                 message = msg.split("PRIVMSG", 1)[
                     1].split(":", 1)[1].strip("\r")
                     #clean problem glyphs
                 message = message.replace('"', '""').replace('u"', '""')
-                cleaned_chat.append(name + ": " + message)
-                print(name + ": " + message)
+                cleaned_chat.append(f"[{channel}] {name}: {message}")
+                print(f"[{channel}] {name}: {message}")
         return cleaned_chat
 
 #def tsock(user, pswd, chan):
